@@ -82,7 +82,7 @@ From there it's quite easy to connect it with any chess engine or online chess e
 # TODO
 
 There is a bunch of things that I still need to do:
-
+- Implement video stream processor that detects move before passing it to processing
 - Clean up notebooks
 - Move chess engine support into code
 - Add docstrings
