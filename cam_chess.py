@@ -9,7 +9,7 @@ from itertools import permutations
 from PIL import Image
 
 
-info = True
+info = False
 
 def capture() -> np.array:
     # TODO: transition capture into class?
@@ -122,3 +122,16 @@ def predict(model, fields, return_probs=False):
             plt.axis('off')
             plt.show()
     return {k: v for k, v in zip(fields.keys(), prob)}
+
+
+def capture_move(model, board, corners):
+    # Captures current state
+    fields = capture_pipeline(corners)
+    # Extracts probs from the model given current player
+    probs = {k: v[1 if board.turn else 2] for k, v in predict(model, fields, True).items()}
+    # Checks for legal moves
+    legal_moves = [(str(m)[:2], str(m)[2:]) for m in board.legal_moves]
+    # Combines probs - you should move from field a to field b
+    probs_combo = [probs[b] - probs[a] for a, b in legal_moves]
+    # Selects most likely move
+    return list(board.legal_moves)[np.argmax(probs_combo)]

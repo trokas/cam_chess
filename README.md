@@ -2,6 +2,8 @@
 
 Play chess against your laptop using real chess set.
 
+![](img/demo.gif)
+
 This is a mini-project that could be used to teach AI. Final goal will be an engine which allows you to play real chess board against a laptop. Most interesting part is to estimate what move you have made using NN. What you will have to do is to show some preset chess board to the engine so that it can retrain the model. After that you should be able to play as if you have a smart chess board. It's a fun mini-project for a cold winter evening.
 
 ## Simplifying the problem
@@ -58,15 +60,13 @@ For model I simply took pretrained mobilenet and added couple fully connected la
 
 For the game engine I decided to go with [python-chess](https://python-chess.readthedocs.io/en/latest/). Move estimation strategy is quite simple - first I extract possible moves at the current board state, then I look at NN probabilities for the given collor. Since I expect that the figure will move from one square to another our final estimate is simply a difference of presence between new field and current one.
 
-STILL IN PROGRESS
-
 Game can be played by using keras model and python-chess as follows:
 
 ```python
 # Set up empty board
 board = chess.Board()
 # Captures current state
-fields = apture_pipeline(corners)
+fields = capture_pipeline(corners)
 # Extracts probs from the model given current player
 probs = {k: v[1 if board.turn else 2] for k, v in predict(model, fields, True).items()}
 # Checks for legal moves
@@ -76,3 +76,16 @@ probs_combo = [probs[b] - probs[a] for a, b in legal_moves]
 # Selects most likely move
 move = list(board.legal_moves)[np.argmax(probs_combo)]
 ```
+
+From there it's quite easy to connect it with any chess engine or online chess engine and have a nice game. In demo video I have used [Stockfish](https://stockfishchess.org/download/).
+
+# TODO
+
+There is a bunch of things that I still need to do:
+
+- Clean up notebooks
+- Move chess engine support into code
+- Add docstrings
+- Move tests from notebooks to test cases
+- Create a single notebook that explains all process
+- etc.
